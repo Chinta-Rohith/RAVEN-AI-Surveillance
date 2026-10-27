@@ -83,3 +83,27 @@ desktop.ini
 *.swp
 *.swo
 *~
+
+# ==============================================================================
+# Additional Security & Repository Hygiene
+# ==============================================================================
+
+# Executables
+cloudflared.exe
+*.exe
+
+# Centralized User Account Store & Telemetry Database
+data/
+data/*
+logs/
+logs/*
+*.db
+*.sqlite3
+*.log
+
+# Sensitive Account Exports
+LOGIN_DETAILS.txt
+LOGIN_DETAILS.md
+USER_ACCOUNTS.md
+user_logs.txt
+account_exports/
