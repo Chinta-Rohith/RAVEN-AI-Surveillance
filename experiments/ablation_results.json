@@ -1,0 +1,47 @@
+{
+  "timestamp": 1793119207.2672799,
+  "frames_evaluated": 30,
+  "status": "RAVEN reproduction benchmark complete",
+  "configs": {
+    "A (YOLO11 only)": {
+      "average_latency_ms": 104.07,
+      "fps": 9.6,
+      "false_positives_filtered": "Unfiltered baseline",
+      "tracking_continuity": "None (Single-frame)",
+      "ptz_recenter_loop": "None",
+      "notes": "Measured on host CPU/GPU runtime."
+    },
+    "B (YOLO11 + VaL_CNN)": {
+      "average_latency_ms": 91.15,
+      "fps": 11.0,
+      "false_positives_filtered": "Enabled via VaL_CNN",
+      "tracking_continuity": "None (Single-frame)",
+      "ptz_recenter_loop": "None",
+      "notes": "Measured on host CPU/GPU runtime."
+    },
+    "C (YOLO11 + DeepSORT)": {
+      "average_latency_ms": 87.5,
+      "fps": 11.4,
+      "false_positives_filtered": "Unfiltered baseline",
+      "tracking_continuity": "Active (DeepSORT)",
+      "ptz_recenter_loop": "None",
+      "notes": "Measured on host CPU/GPU runtime."
+    },
+    "D (YOLO11 + VaL_CNN + DeepSORT)": {
+      "average_latency_ms": 97.18,
+      "fps": 10.3,
+      "false_positives_filtered": "Enabled via VaL_CNN",
+      "tracking_continuity": "Active (DeepSORT)",
+      "ptz_recenter_loop": "None",
+      "notes": "Measured on host CPU/GPU runtime."
+    },
+    "E (YOLO11 + VaL_CNN + DeepSORT + PTZ)": {
+      "average_latency_ms": 97.38,
+      "fps": 10.3,
+      "false_positives_filtered": "Enabled via VaL_CNN",
+      "tracking_continuity": "Active (DeepSORT)",
+      "ptz_recenter_loop": "Closed-loop ONVIF/Sim",
+      "notes": "Measured on host CPU/GPU runtime."
+    }
+  }
+}

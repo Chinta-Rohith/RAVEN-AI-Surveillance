@@ -1,0 +1,11 @@
+# VaL_CNN Training Configuration (DeTrAck IEEE Access 2025)
+input_size: 64
+batch_size: 128
+learning_rate: 0.001
+optimizer: "Adam"
+epochs: 50
+early_stopping_patience: 5
+num_classes: 2
+dataset_dir: "datasets/val_cnn"
+output_model_path: "models/val_cnn.pt"
+device: "cpu"  # Set to "cuda" if GPU is available

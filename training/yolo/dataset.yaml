@@ -1,0 +1,8 @@
+# RAVEN YOLO11 Custom UAV Dataset Configuration
+path: ../../datasets/yolo_uav
+train: images/train
+val: images/val
+test: images/test
+
+names:
+  0: uav
