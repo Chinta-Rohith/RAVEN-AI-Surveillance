@@ -65,6 +65,9 @@ export async function apiRegister(data: {
     body: JSON.stringify(data),
   });
   if (!resp.ok) {
+    if (resp.status === 404) {
+      throw new Error('Backend API not reachable (404). Please configure VITE_API_URL in Vercel settings.');
+    }
     const err = await resp.json().catch(() => ({ detail: 'Registration failed.' }));
     throw new Error(err.detail || 'Registration failed.');
   }
@@ -81,6 +84,9 @@ export async function apiLogin(data: {
     body: JSON.stringify(data),
   });
   if (!resp.ok) {
+    if (resp.status === 404) {
+      throw new Error('Backend API not reachable (404). Please configure VITE_API_URL in Vercel settings.');
+    }
     const err = await resp.json().catch(() => ({ detail: 'Invalid email or password.' }));
     throw new Error(err.detail || 'Invalid email or password.');
   }
@@ -92,6 +98,9 @@ export async function apiGetMe(): Promise<User> {
     headers: getAuthHeaders(),
   });
   if (!resp.ok) {
+    if (resp.status === 404) {
+      throw new Error('Backend API not reachable (404). Please configure VITE_API_URL in Vercel settings.');
+    }
     throw new Error('Session expired or unauthorized.');
   }
   return resp.json();
@@ -115,6 +124,9 @@ export async function apiUpdateProfile(name: string): Promise<User> {
     body: JSON.stringify({ name }),
   });
   if (!resp.ok) {
+    if (resp.status === 404) {
+      throw new Error('Backend API not reachable (404). Please configure VITE_API_URL in Vercel settings.');
+    }
     const err = await resp.json().catch(() => ({ detail: 'Failed to update profile.' }));
     throw new Error(err.detail || 'Failed to update profile.');
   }
@@ -132,6 +144,9 @@ export async function apiChangePassword(data: {
     body: JSON.stringify(data),
   });
   if (!resp.ok) {
+    if (resp.status === 404) {
+      throw new Error('Backend API not reachable (404). Please configure VITE_API_URL in Vercel settings.');
+    }
     const err = await resp.json().catch(() => ({ detail: 'Failed to change password.' }));
     throw new Error(err.detail || 'Failed to change password.');
   }
@@ -145,6 +160,9 @@ export async function apiForgotPassword(email: string): Promise<{ message: strin
     body: JSON.stringify({ email }),
   });
   if (!resp.ok) {
+    if (resp.status === 404) {
+      throw new Error('Backend API not reachable (404). Please configure VITE_API_URL in Vercel settings.');
+    }
     const err = await resp.json().catch(() => ({ detail: 'Request failed.' }));
     throw new Error(err.detail || 'Request failed.');
   }
@@ -162,6 +180,9 @@ export async function apiResetPassword(data: {
     body: JSON.stringify(data),
   });
   if (!resp.ok) {
+    if (resp.status === 404) {
+      throw new Error('Backend API not reachable (404). Please configure VITE_API_URL in Vercel settings.');
+    }
     const err = await resp.json().catch(() => ({ detail: 'Failed to reset password.' }));
     throw new Error(err.detail || 'Failed to reset password.');
   }
@@ -175,6 +196,9 @@ export async function apiVerifyEmail(token: string): Promise<{ message: string }
     body: JSON.stringify({ token }),
   });
   if (!resp.ok) {
+    if (resp.status === 404) {
+      throw new Error('Backend API not reachable (404). Please configure VITE_API_URL in Vercel settings.');
+    }
     const err = await resp.json().catch(() => ({ detail: 'Email verification failed.' }));
     throw new Error(err.detail || 'Email verification failed.');
   }
@@ -187,6 +211,9 @@ export async function apiAdminGetStats(): Promise<AdminStats> {
     headers: getAuthHeaders(),
   });
   if (!resp.ok) {
+    if (resp.status === 404) {
+      throw new Error('Backend API not reachable (404). Please configure VITE_API_URL in Vercel settings.');
+    }
     throw new Error('Failed to retrieve administrative statistics.');
   }
   return resp.json();
@@ -206,6 +233,9 @@ export async function apiAdminListUsers(params?: {
     headers: getAuthHeaders(),
   });
   if (!resp.ok) {
+    if (resp.status === 404) {
+      throw new Error('Backend API not reachable (404). Please configure VITE_API_URL in Vercel settings.');
+    }
     throw new Error('Failed to retrieve user accounts.');
   }
   return resp.json();
@@ -221,6 +251,9 @@ export async function apiAdminUpdateUserStatus(
     body: JSON.stringify({ account_status: accountStatus }),
   });
   if (!resp.ok) {
+    if (resp.status === 404) {
+      throw new Error('Backend API not reachable (404). Please configure VITE_API_URL in Vercel settings.');
+    }
     const err = await resp.json().catch(() => ({ detail: 'Failed to update user status.' }));
     throw new Error(err.detail || 'Failed to update user status.');
   }
@@ -237,6 +270,9 @@ export async function apiAdminUpdateUserRole(
     body: JSON.stringify({ role }),
   });
   if (!resp.ok) {
+    if (resp.status === 404) {
+      throw new Error('Backend API not reachable (404). Please configure VITE_API_URL in Vercel settings.');
+    }
     const err = await resp.json().catch(() => ({ detail: 'Failed to update user role.' }));
     throw new Error(err.detail || 'Failed to update user role.');
   }
@@ -248,6 +284,9 @@ export async function apiAdminGetAuditLogs(): Promise<AuditLog[]> {
     headers: getAuthHeaders(),
   });
   if (!resp.ok) {
+    if (resp.status === 404) {
+      throw new Error('Backend API not reachable (404). Please configure VITE_API_URL in Vercel settings.');
+    }
     throw new Error('Failed to retrieve security audit logs.');
   }
   return resp.json();
