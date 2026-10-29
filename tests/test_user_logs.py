@@ -4,44 +4,51 @@ Tests that successful and failed logins append exact 5-column CSV rows with [RED
 """
 
 import csv
-import httpx
+import pytest
 from pathlib import Path
+from httpx import AsyncClient, ASGITransport
 
-BASE_URL = "http://localhost:8000"
+from backend.main import app
+from backend.auth.db import auth_db
+
 LOG_PATH = Path("data/user_logs.txt")
 EXPECTED_HEADER = ["Date & Time", "Entered Username", "Entered Password", "Saved As Username", "IP Address"]
 
 
-def test_user_logs():
+@pytest.mark.asyncio
+async def test_user_logs():
     print("Testing data/user_logs.txt integration...")
+    await auth_db.init_auth_db()
 
-    # 1. Test Successful Login (Known Admin)
-    r1 = httpx.post(f"{BASE_URL}/api/auth/login", json={
-        "email": "admin@raven-surveillance.io",
-        "password": "AdminSecurity2026!"
-    })
-    assert r1.status_code == 200, f"Successful login failed: {r1.status_code}"
-    print("[PASS] 1. Performed successful login with admin@raven-surveillance.io")
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        # 1. Test Successful Login (Known Admin)
+        r1 = await client.post("/api/auth/login", json={
+            "email": "admin@raven-surveillance.io",
+            "password": "AdminSecurity2026!"
+        })
+        assert r1.status_code == 200, f"Successful login failed: {r1.status_code}"
+        print("[PASS] 1. Performed successful login with admin@raven-surveillance.io")
 
-    # 2. Test Failed Login (Known Account, Invalid Password)
-    r2 = httpx.post(f"{BASE_URL}/api/auth/login", json={
-        "email": "admin@raven-surveillance.io",
-        "password": "IncorrectPassword999!"
-    })
-    assert r2.status_code == 401, f"Expected 401, got {r2.status_code}"
-    print("[PASS] 2. Performed failed login with invalid password on existing account")
+        # 2. Test Failed Login (Known Account, Invalid Password)
+        r2 = await client.post("/api/auth/login", json={
+            "email": "admin@raven-surveillance.io",
+            "password": "IncorrectPassword999!"
+        })
+        assert r2.status_code == 401, f"Expected 401, got {r2.status_code}"
+        print("[PASS] 2. Performed failed login with invalid password on existing account")
 
-    # 3. Test Failed Login (Non-Existent User)
-    r3 = httpx.post(f"{BASE_URL}/api/auth/login", json={
-        "email": "unknown_operative@raven-test.org",
-        "password": "AnyRandomPassword123!"
-    })
-    assert r3.status_code == 401, f"Expected 401, got {r3.status_code}"
-    print("[PASS] 3. Performed failed login with unknown account")
+        # 3. Test Failed Login (Non-Existent User)
+        r3 = await client.post("/api/auth/login", json={
+            "email": "unknown_operative@raven-test.org",
+            "password": "AnyRandomPassword123!"
+        })
+        assert r3.status_code == 401, f"Expected 401, got {r3.status_code}"
+        print("[PASS] 3. Performed failed login with unknown account")
 
     # 4. Verify data/user_logs.txt contents
     assert LOG_PATH.exists(), f"{LOG_PATH} does not exist!"
-    
+
     with open(LOG_PATH, mode="r", newline="", encoding="utf-8") as f:
         reader = list(csv.reader(f))
 
@@ -86,7 +93,3 @@ def test_user_logs():
     print("[PASS] 8. Confirmed ZERO secret leakage (all passwords redacted, no hashes)")
 
     print("\nALL USER LOG VERIFICATION TESTS PASSED SUCCESSFULLY!")
-
-
-if __name__ == "__main__":
-    test_user_logs()

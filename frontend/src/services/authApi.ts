@@ -40,7 +40,7 @@ export interface AuditLog {
   details?: string;
 }
 
-const API_BASE = '/api';
+const API_BASE = (import.meta as any).env?.VITE_API_URL ? `${(import.meta as any).env.VITE_API_URL}/api` : '/api';
 
 function getAuthHeaders(): HeadersInit {
   const token = localStorage.getItem('raven_auth_token');

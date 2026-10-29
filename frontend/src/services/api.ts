@@ -3,10 +3,12 @@
  */
 
 const isDev = window.location.port === '5173';
-const API_BASE = isDev ? 'http://localhost:8000' : window.location.origin;
+const envApi = (import.meta as any).env?.VITE_API_URL;
+const envWs = (import.meta as any).env?.VITE_WS_URL;
+const API_BASE = envApi || (isDev ? 'http://localhost:8000' : window.location.origin);
 const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 const wsHost = isDev ? 'localhost:8000' : window.location.host;
-const WS_URL = `${wsProtocol}//${wsHost}/ws/stream`;
+const WS_URL = envWs || (envApi ? envApi.replace(/^http/, 'ws') + '/ws/stream' : `${wsProtocol}//${wsHost}/ws/stream`);
 
 export async function fetchSystemStatus() {
   const res = await fetch(`${API_BASE}/api/system/status`);
