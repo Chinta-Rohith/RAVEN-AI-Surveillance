@@ -40,7 +40,11 @@ export interface AuditLog {
   details?: string;
 }
 
-const API_BASE = (import.meta as any).env?.VITE_API_URL ? `${(import.meta as any).env.VITE_API_URL}/api` : '/api';
+const isDev = typeof window !== 'undefined' && window.location.port === '5173';
+const envApi = import.meta.env.VITE_API_URL;
+const FALLBACK_API = 'https://trained-races-worked-started.trycloudflare.com';
+
+const API_BASE = (envApi ? envApi.replace(/\/+$/, '') : (isDev ? 'http://localhost:8000' : FALLBACK_API)) + '/api';
 
 function getAuthHeaders(): HeadersInit {
   const token = localStorage.getItem('raven_auth_token');

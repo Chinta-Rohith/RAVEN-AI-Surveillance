@@ -2,13 +2,16 @@
  * RAVEN API and WebSocket Client
  */
 
-const isDev = window.location.port === '5173';
-const envApi = (import.meta as any).env?.VITE_API_URL;
-const envWs = (import.meta as any).env?.VITE_WS_URL;
-const API_BASE = envApi || (isDev ? 'http://localhost:8000' : window.location.origin);
-const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-const wsHost = isDev ? 'localhost:8000' : window.location.host;
-const WS_URL = envWs || (envApi ? envApi.replace(/^http/, 'ws') + '/ws/stream' : `${wsProtocol}//${wsHost}/ws/stream`);
+const isDev = typeof window !== 'undefined' && window.location.port === '5173';
+const envApi = import.meta.env.VITE_API_URL;
+const envWs = import.meta.env.VITE_WS_URL;
+
+// Active production backend endpoints
+const FALLBACK_API = 'https://trained-races-worked-started.trycloudflare.com';
+const FALLBACK_WS = 'wss://trained-races-worked-started.trycloudflare.com/ws/stream';
+
+const API_BASE = envApi ? envApi.replace(/\/+$/, '') : (isDev ? 'http://localhost:8000' : FALLBACK_API);
+const WS_URL = envWs || (envApi ? envApi.replace(/^http/, 'ws') + '/ws/stream' : (isDev ? 'ws://localhost:8000/ws/stream' : FALLBACK_WS));
 
 export async function fetchSystemStatus() {
   const res = await fetch(`${API_BASE}/api/system/status`);
