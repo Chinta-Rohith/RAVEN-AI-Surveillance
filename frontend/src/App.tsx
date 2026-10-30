@@ -416,7 +416,25 @@ const RavenAuthenticatedApp: React.FC = () => {
 
 const RavenAppRouter: React.FC = () => {
   const { isAuthenticated, isLoading } = useAuth();
-  const [authView, setAuthView] = useState<string>('landing');
+
+  const getInitialView = () => {
+    if (typeof window !== 'undefined') {
+      const p = window.location.pathname.toLowerCase();
+      if (p.includes('register')) return 'register';
+      if (p.includes('login') || p.includes('signin')) return 'login';
+    }
+    return 'landing';
+  };
+
+  const [authView, setAuthView] = useState<string>(getInitialView);
+
+  const handleNavigate = (view: string) => {
+    setAuthView(view);
+    if (typeof window !== 'undefined') {
+      const targetPath = view === 'landing' ? '/' : '/' + view;
+      window.history.pushState(null, '', targetPath);
+    }
+  };
 
   useEffect(() => {
     // Check URL parameters for single-use email verification or reset token
@@ -447,12 +465,12 @@ const RavenAppRouter: React.FC = () => {
   // Otherwise, render public landing or authentication views
   return (
     <>
-      {authView === 'landing' && <LandingPage onNavigate={setAuthView} />}
-      {authView === 'login' && <LoginPage onNavigate={setAuthView} />}
-      {authView === 'register' && <RegisterPage onNavigate={setAuthView} />}
-      {authView === 'forgot-password' && <ForgotPasswordPage onNavigate={setAuthView} />}
-      {authView === 'reset-password' && <ResetPasswordPage onNavigate={setAuthView} />}
-      {authView === 'verify-email' && <VerifyEmailPage onNavigate={setAuthView} />}
+      {authView === 'landing' && <LandingPage onNavigate={handleNavigate} />}
+      {authView === 'login' && <LoginPage onNavigate={handleNavigate} />}
+      {authView === 'register' && <RegisterPage onNavigate={handleNavigate} />}
+      {authView === 'forgot-password' && <ForgotPasswordPage onNavigate={handleNavigate} />}
+      {authView === 'reset-password' && <ResetPasswordPage onNavigate={handleNavigate} />}
+      {authView === 'verify-email' && <VerifyEmailPage onNavigate={handleNavigate} />}
     </>
   );
 };
