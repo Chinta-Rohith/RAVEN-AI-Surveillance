@@ -1,9 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
-  "buildCommand": "cd frontend && npm install && npm run build",
+  "buildCommand": "node -e \"const fs=require('fs'); if(fs.existsSync('frontend')){process.chdir('frontend');} require('child_process').execSync('npm run build',{stdio:'inherit'});\"",
   "outputDirectory": "frontend/dist",
-  "framework": "vite",
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
@@ -14,10 +13,6 @@
     {
       "source": "/images/:path*",
       "destination": "/images/:path*"
-    },
-    {
-      "source": "/api/:path*",
-      "destination": "/api/:path*"
     },
     {
       "source": "/((?!api/|assets/|images/).*)",
