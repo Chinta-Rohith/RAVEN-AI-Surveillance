@@ -42,7 +42,7 @@ class TelemetryRepository:
             ensemble_confidence, distance_m, ptz_pan, ptz_tilt, ptz_command, situation_state
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """
-        async with await self.db_manager.get_connection() as db:
+        async with aiosqlite.connect(self.db_manager.db_path) as db:
             await db.execute(
                 query,
                 (
@@ -62,7 +62,7 @@ class TelemetryRepository:
         ORDER BY id DESC
         LIMIT ?
         """
-        async with await self.db_manager.get_connection() as db:
+        async with aiosqlite.connect(self.db_manager.db_path) as db:
             db.row_factory = aiosqlite.Row
             async with db.execute(query, (limit,)) as cursor:
                 rows = await cursor.fetchall()
